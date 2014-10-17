@@ -24,43 +24,49 @@ import time
 import Adafruit_GPIO.I2C as I2C
 
 
-# BMP085 default address.
-BMP085_I2CADDR           = 0x77
+# BMP280 default address, as set on my system
+BMP280_I2CADDR           = 0x76
 
 # Operating Modes
-BMP085_ULTRALOWPOWER     = 0
-BMP085_STANDARD          = 1
-BMP085_HIGHRES           = 2
-BMP085_ULTRAHIGHRES      = 3
+BMP280_ULTRALOWPOWER     = 0
+BMP280_STANDARD          = 1
+BMP280_HIGHRES           = 2
+BMP280_ULTRAHIGHRES      = 3
 
-# BMP085 Registers
-BMP085_CAL_AC1           = 0xAA  # R   Calibration data (16 bits)
-BMP085_CAL_AC2           = 0xAC  # R   Calibration data (16 bits)
-BMP085_CAL_AC3           = 0xAE  # R   Calibration data (16 bits)
-BMP085_CAL_AC4           = 0xB0  # R   Calibration data (16 bits)
-BMP085_CAL_AC5           = 0xB2  # R   Calibration data (16 bits)
-BMP085_CAL_AC6           = 0xB4  # R   Calibration data (16 bits)
-BMP085_CAL_B1            = 0xB6  # R   Calibration data (16 bits)
-BMP085_CAL_B2            = 0xB8  # R   Calibration data (16 bits)
-BMP085_CAL_MB            = 0xBA  # R   Calibration data (16 bits)
-BMP085_CAL_MC            = 0xBC  # R   Calibration data (16 bits)
-BMP085_CAL_MD            = 0xBE  # R   Calibration data (16 bits)
-BMP085_CONTROL           = 0xF4
-BMP085_TEMPDATA          = 0xF6
-BMP085_PRESSUREDATA      = 0xF6
+# BMP280 Registers
+BMP280_T1           	 = 0x88  # R   Calibration data (16 bits)
+BMP280_T2           	 = 0x8A  # R   Calibration data (16 bits)
+BMP280_T3                = 0x8C  # R   Calibration data (16 bits)
+BMP280_P1          	     = 0x8E  # R   Calibration data (16 bits)
+BMP280_P2                = 0x90  # R   Calibration data (16 bits)
+BMP280_P3                = 0x92  # R   Calibration data (16 bits)
+BMP280_P4                = 0x94  # R   Calibration data (16 bits)
+BMP280_P5                = 0x96  # R   Calibration data (16 bits)
+BMP280_P6                = 0x98  # R   Calibration data (16 bits)
+BMP280_P7                = 0x9A  # R   Calibration data (16 bits)
+BMP280_P8                = 0x9C  # R   Calibration data (16 bits)
+BMP280_P9                = 0x9E  # R   Calibration data (16 bits)
+
+BMP280_CONTROL           = 0xF4
+BMP280_TEMPDATA          = 0xF7
+BMP280_PRESSUREDATA      = 0xFA
+BMP280_ID				 = 0xD0
+BMP280_RESET			 = 0XE0
+BMP280_CONFIG	 		 = 0XF5
+
 
 # Commands
-BMP085_READTEMPCMD       = 0x2E
-BMP085_READPRESSURECMD   = 0x34
+BMP280_READTEMPCMD       = 0x2E
+BMP280_READPRESSURECMD   = 0x34
 
 
-class BMP085(object):
-	def __init__(self, mode=BMP085_STANDARD, address=BMP085_I2CADDR, 
+class BMP280(object):
+	def __init__(self, mode=BMP280_STANDARD, address=BMP280_I2CADDR, 
 							 busnum=I2C.get_default_bus()):
-		self._logger = logging.getLogger('Adafruit_BMP.BMP085')
+		self._logger = logging.getLogger('Adafruit_BMP.BMP280')
 		# Check that mode is valid.
-		if mode not in [BMP085_ULTRALOWPOWER, BMP085_STANDARD, BMP085_HIGHRES, BMP085_ULTRAHIGHRES]:
-			raise ValueError('Unexpected mode value {0}.  Set mode to one of BMP085_ULTRALOWPOWER, BMP085_STANDARD, BMP085_HIGHRES, or BMP085_ULTRAHIGHRES'.format(mode))
+		if mode not in [BMP280_ULTRALOWPOWER, BMP280_STANDARD, BMP280_HIGHRES, BMP280_ULTRAHIGHRES]:
+			raise ValueError('Unexpected mode value {0}.  Set mode to one of BMP280_ULTRALOWPOWER, BMP280_STANDARD, BMP280_HIGHRES, or BMP280_ULTRAHIGHRES'.format(mode))
 		self._mode = mode
 		# Create I2C device.
 		self._device = I2C.Device(address, busnum)
@@ -68,17 +74,17 @@ class BMP085(object):
 		self._load_calibration()
 
 	def _load_calibration(self):
-		self.cal_AC1 = self._device.readS16BE(BMP085_CAL_AC1)   # INT16
-		self.cal_AC2 = self._device.readS16BE(BMP085_CAL_AC2)   # INT16
-		self.cal_AC3 = self._device.readS16BE(BMP085_CAL_AC3)   # INT16
-		self.cal_AC4 = self._device.readU16BE(BMP085_CAL_AC4)   # UINT16
-		self.cal_AC5 = self._device.readU16BE(BMP085_CAL_AC5)   # UINT16
-		self.cal_AC6 = self._device.readU16BE(BMP085_CAL_AC6)   # UINT16
-		self.cal_B1 = self._device.readS16BE(BMP085_CAL_B1)     # INT16
-		self.cal_B2 = self._device.readS16BE(BMP085_CAL_B2)     # INT16
-		self.cal_MB = self._device.readS16BE(BMP085_CAL_MB)     # INT16
-		self.cal_MC = self._device.readS16BE(BMP085_CAL_MC)     # INT16
-		self.cal_MD = self._device.readS16BE(BMP085_CAL_MD)     # INT16
+		self.cal_AC1 = self._device.readS16BE(BMP280_CAL_AC1)   # INT16
+		self.cal_AC2 = self._device.readS16BE(BMP280_CAL_AC2)   # INT16
+		self.cal_AC3 = self._device.readS16BE(BMP280_CAL_AC3)   # INT16
+		self.cal_AC4 = self._device.readU16BE(BMP280_CAL_AC4)   # UINT16
+		self.cal_AC5 = self._device.readU16BE(BMP280_CAL_AC5)   # UINT16
+		self.cal_AC6 = self._device.readU16BE(BMP280_CAL_AC6)   # UINT16
+		self.cal_B1 = self._device.readS16BE(BMP280_CAL_B1)     # INT16
+		self.cal_B2 = self._device.readS16BE(BMP280_CAL_B2)     # INT16
+		self.cal_MB = self._device.readS16BE(BMP280_CAL_MB)     # INT16
+		self.cal_MC = self._device.readS16BE(BMP280_CAL_MC)     # INT16
+		self.cal_MD = self._device.readS16BE(BMP280_CAL_MD)     # INT16
 		self._logger.debug('AC1 = {0:6d}'.format(self.cal_AC1))
 		self._logger.debug('AC2 = {0:6d}'.format(self.cal_AC2))
 		self._logger.debug('AC3 = {0:6d}'.format(self.cal_AC3))
@@ -108,26 +114,26 @@ class BMP085(object):
 
 	def read_raw_temp(self):
 		"""Reads the raw (uncompensated) temperature from the sensor."""
-		self._device.write8(BMP085_CONTROL, BMP085_READTEMPCMD)
+		self._device.write8(BMP280_CONTROL, BMP280_READTEMPCMD)
 		time.sleep(0.005)  # Wait 5ms
-		raw = self._device.readU16BE(BMP085_TEMPDATA)
+		raw = self._device.readU16BE(BMP280_TEMPDATA)
 		self._logger.debug('Raw temp 0x{0:X} ({1})'.format(raw & 0xFFFF, raw))
 		return raw
 
 	def read_raw_pressure(self):
 		"""Reads the raw (uncompensated) pressure level from the sensor."""
-		self._device.write8(BMP085_CONTROL, BMP085_READPRESSURECMD + (self._mode << 6))
-		if self._mode == BMP085_ULTRALOWPOWER:
+		self._device.write8(BMP280_CONTROL, BMP280_READPRESSURECMD + (self._mode << 6))
+		if self._mode == BMP280_ULTRALOWPOWER:
 			time.sleep(0.005)
-		elif self._mode == BMP085_HIGHRES:
+		elif self._mode == BMP280_HIGHRES:
 			time.sleep(0.014)
-		elif self._mode == BMP085_ULTRAHIGHRES:
+		elif self._mode == BMP280_ULTRAHIGHRES:
 			time.sleep(0.026)
 		else:
 			time.sleep(0.008)
-		msb = self._device.readU8(BMP085_PRESSUREDATA)
-		lsb = self._device.readU8(BMP085_PRESSUREDATA+1)
-		xlsb = self._device.readU8(BMP085_PRESSUREDATA+2)
+		msb = self._device.readU8(BMP280_PRESSUREDATA)
+		lsb = self._device.readU8(BMP280_PRESSUREDATA+1)
+		xlsb = self._device.readU8(BMP280_PRESSUREDATA+2)
 		raw = ((msb << 16) + (lsb << 8) + xlsb) >> (8 - self._mode)
 		self._logger.debug('Raw pressure 0x{0:04X} ({1})'.format(raw & 0xFFFF, raw))
 		return raw
