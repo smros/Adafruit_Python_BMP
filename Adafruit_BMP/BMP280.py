@@ -37,7 +37,7 @@ BMP280_ULTRAHIGHRES      = 3
 BMP280_T1           	 = 0x88  # R   Calibration data (16 bits)
 BMP280_T2           	 = 0x8A  # R   Calibration data (16 bits)
 BMP280_T3                = 0x8C  # R   Calibration data (16 bits)
-BMP280_P1          	     = 0x8E  # R   Calibration data (16 bits)
+BMP280_P1          	 = 0x8E  # R   Calibration data (16 bits)
 BMP280_P2                = 0x90  # R   Calibration data (16 bits)
 BMP280_P3                = 0x92  # R   Calibration data (16 bits)
 BMP280_P4                = 0x94  # R   Calibration data (16 bits)
@@ -74,18 +74,18 @@ class BMP280(object):
 		self._load_calibration()
 
 	def _load_calibration(self):
-		self.cal_T1 = self._device.readS16BE(BMP280_T1)   # INT16
-		self.cal_T2 = self._device.readS16BE(BMP280_T2)   # INT16
-		self.cal_T3 = self._device.readS16BE(BMP280_T3)   # INT16
-		self.cal_P1 = self._device.readU16BE(BMP280_P1)   # UINT16
-		self.cal_P2 = self._device.readU16BE(BMP280_P2)   # UINT16
-		self.cal_P3 = self._device.readU16BE(BMP280_P3)   # UINT16
-		self.cal_P4 = self._device.readS16BE(BMP280_P4)     # INT16
-		self.cal_P5 = self._device.readS16BE(BMP280_P5)     # INT16
-		self.cal_P6 = self._device.readS16BE(BMP280_P6)     # INT16
-		self.cal_P7 = self._device.readS16BE(BMP280_P7)     # INT16
-		self.cal_P8 = self._device.readS16BE(BMP280_P8)     # INT16
-		self.cal_P9 = self._device.readS16BE(BMP280_P9)     # INT16
+		self.cal_T1 = self._device.readU16LE(BMP280_T1)   # INT16
+		self.cal_T2 = self._device.readS16LE(BMP280_T2)   # INT16
+		self.cal_T3 = self._device.readS16LE(BMP280_T3)   # INT16
+		self.cal_P1 = self._device.readS16LE(BMP280_P1)   # UINT16
+		self.cal_P2 = self._device.readS16LE(BMP280_P2)   # UINT16
+		self.cal_P3 = self._device.readS16LE(BMP280_P3)   # UINT16
+		self.cal_P4 = self._device.readS16LE(BMP280_P4)     # INT16
+		self.cal_P5 = self._device.readS16LE(BMP280_P5)     # INT16
+		self.cal_P6 = self._device.readS16LE(BMP280_P6)     # INT16
+		self.cal_P7 = self._device.readS16LE(BMP280_P7)     # INT16
+		self.cal_P8 = self._device.readS16LE(BMP280_P8)     # INT16
+		self.cal_P9 = self._device.readS16LE(BMP280_P9)     # INT16
 		self._logger.debug('T1 = {0:6d}'.format(self.cal_T1))
 		self._logger.debug('T2 = {0:6d}'.format(self.cal_T2))
 		self._logger.debug('T3 = {0:6d}'.format(self.cal_T3))
@@ -211,3 +211,16 @@ class BMP280(object):
 if __name__ == "__main__":
 
 	test=BMP280()
+	print test.cal_T1
+	print test.cal_T2
+	print test.cal_T3
+	print test.cal_P1
+	print test.cal_P2
+	print test.cal_P3
+	print test.cal_P4
+	print test.cal_P5
+	print test.cal_P6
+	print test.cal_P7
+	print test.cal_P8
+	print test.cal_P9
+
