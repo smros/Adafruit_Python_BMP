@@ -74,28 +74,30 @@ class BMP280(object):
 		self._load_calibration()
 
 	def _load_calibration(self):
-		self.cal_AC1 = self._device.readS16BE(BMP280_CAL_AC1)   # INT16
-		self.cal_AC2 = self._device.readS16BE(BMP280_CAL_AC2)   # INT16
-		self.cal_AC3 = self._device.readS16BE(BMP280_CAL_AC3)   # INT16
-		self.cal_AC4 = self._device.readU16BE(BMP280_CAL_AC4)   # UINT16
-		self.cal_AC5 = self._device.readU16BE(BMP280_CAL_AC5)   # UINT16
-		self.cal_AC6 = self._device.readU16BE(BMP280_CAL_AC6)   # UINT16
-		self.cal_B1 = self._device.readS16BE(BMP280_CAL_B1)     # INT16
-		self.cal_B2 = self._device.readS16BE(BMP280_CAL_B2)     # INT16
-		self.cal_MB = self._device.readS16BE(BMP280_CAL_MB)     # INT16
-		self.cal_MC = self._device.readS16BE(BMP280_CAL_MC)     # INT16
-		self.cal_MD = self._device.readS16BE(BMP280_CAL_MD)     # INT16
-		self._logger.debug('AC1 = {0:6d}'.format(self.cal_AC1))
-		self._logger.debug('AC2 = {0:6d}'.format(self.cal_AC2))
-		self._logger.debug('AC3 = {0:6d}'.format(self.cal_AC3))
-		self._logger.debug('AC4 = {0:6d}'.format(self.cal_AC4))
-		self._logger.debug('AC5 = {0:6d}'.format(self.cal_AC5))
-		self._logger.debug('AC6 = {0:6d}'.format(self.cal_AC6))
-		self._logger.debug('B1 = {0:6d}'.format(self.cal_B1))
-		self._logger.debug('B2 = {0:6d}'.format(self.cal_B2))
-		self._logger.debug('MB = {0:6d}'.format(self.cal_MB))
-		self._logger.debug('MC = {0:6d}'.format(self.cal_MC))
-		self._logger.debug('MD = {0:6d}'.format(self.cal_MD))
+		self.cal_T1 = self._device.readS16BE(BMP280_T1)   # INT16
+		self.cal_T2 = self._device.readS16BE(BMP280_T2)   # INT16
+		self.cal_T3 = self._device.readS16BE(BMP280_T3)   # INT16
+		self.cal_P1 = self._device.readU16BE(BMP280_P1)   # UINT16
+		self.cal_P2 = self._device.readU16BE(BMP280_P2)   # UINT16
+		self.cal_P3 = self._device.readU16BE(BMP280_P3)   # UINT16
+		self.cal_P4 = self._device.readS16BE(BMP280_P4)     # INT16
+		self.cal_P5 = self._device.readS16BE(BMP280_P5)     # INT16
+		self.cal_P6 = self._device.readS16BE(BMP280_P6)     # INT16
+		self.cal_P7 = self._device.readS16BE(BMP280_P7)     # INT16
+		self.cal_P8 = self._device.readS16BE(BMP280_P8)     # INT16
+		self.cal_P9 = self._device.readS16BE(BMP280_P9)     # INT16
+		self._logger.debug('T1 = {0:6d}'.format(self.cal_T1))
+		self._logger.debug('T2 = {0:6d}'.format(self.cal_T2))
+		self._logger.debug('T3 = {0:6d}'.format(self.cal_T3))
+		self._logger.debug('P1 = {0:6d}'.format(self.cal_P1))
+		self._logger.debug('P2 = {0:6d}'.format(self.cal_P2))
+		self._logger.debug('P3 = {0:6d}'.format(self.cal_P3))
+		self._logger.debug('P4 = {0:6d}'.format(self.cal_P4))
+		self._logger.debug('P5 = {0:6d}'.format(self.cal_P5))
+		self._logger.debug('P6 = {0:6d}'.format(self.cal_P6))
+		self._logger.debug('P7 = {0:6d}'.format(self.cal_P7))
+		self._logger.debug('P8 = {0:6d}'.format(self.cal_P8))
+		self._logger.debug('P9 = {0:6d}'.format(self.cal_P9))
 
 	def _load_datasheet_calibration(self):
 		# Set calibration from values in the datasheet example.  Useful for debugging the
@@ -205,3 +207,7 @@ class BMP280(object):
 		p0 = pressure / pow(1.0 - altitude_m/44330.0, 5.255)
 		self._logger.debug('Sealevel pressure {0} Pa'.format(p0))
 		return p0
+
+if __name__ == "__main__":
+
+	test=BMP280()
