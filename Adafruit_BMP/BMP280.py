@@ -47,9 +47,9 @@ BMP280_P7                = 0x9A  # R   Calibration data (16 bits)
 BMP280_P8                = 0x9C  # R   Calibration data (16 bits)
 BMP280_P9                = 0x9E  # R   Calibration data (16 bits)
 
-BMP280_CONTROL           = 0xF4
-BMP280_TEMPDATA          = 0xF7
-BMP280_PRESSUREDATA      = 0xFA
+BMP280_CONTROLMEAS       = 0xF4
+BMP280_TEMPDATA          = 0xFA
+BMP280_PRESSUREDATA      = 0xF7
 BMP280_ID				 = 0xD0
 BMP280_RESET			 = 0XE0
 BMP280_CONFIG	 		 = 0XF5
@@ -59,6 +59,44 @@ BMP280_CONFIG	 		 = 0XF5
 BMP280_READTEMPCMD       = 0x2E
 BMP280_READPRESSURECMD   = 0x34
 
+OSRT_MODES={	0:0,
+		1:0x1,
+		2:0x2,
+		4:0x3,
+		8:0x4,
+		16:0x7
+		}
+		
+OSRP_MODES={	0:0,
+		1:0x1,
+		2:0x2,
+		4:0x3,
+		8:0x4,
+		16:0x7
+		}
+
+POWER_MODES={	'SLEEP':0X0,
+				'FORCED':0X1,
+				'NORMAL':0X3
+			}
+
+IIR_MODES={	'OFF':0,
+		2:0x1,
+		4:0x2,
+		8:0x3,
+		16:0x4
+		}		
+		
+TIME_SB={	0.5:0x0,
+		62.5:0x1,
+		125:0x2,
+		250:0x3,
+		500:0x4,
+		1000:0x5,
+		2000:0x6,
+		4000:0x7
+		}
+		
 
 class BMP280(object):
 	def __init__(self, mode=BMP280_STANDARD, address=BMP280_I2CADDR, 
@@ -72,6 +110,21 @@ class BMP280(object):
 		self._device = I2C.Device(address, busnum)
 		# Load calibration values.
 		self._load_calibration()
+		
+	def set_control_register(self, OSRT=0, OSRP=0, IIR='OFF',POWER_MODE='NORMAL'):
+		cntl_reg=0
+		cntl_reg+= OSRT_MODES[OSRT]<<5 + OSRP_MODES[OSRP]<<2 + POWER_MODES[POWER_MODE]
+		self._device.write8(BMP280_CONTROLMEAS, cntl_reg)
+		# save in object
+		self.cntl_register=cntl_reg
+		
+	def set_config_register(self, TIME_SB=0.5, IIR='OFF'):
+		cfg_reg=0
+		cfg_reg+=TIME_SB[TIME_SB]<<5 + IIR_MODES[IIR]<<2
+		self._device.write8(BMP280_CONFIG, cntl_reg)
+		# save in object
+		self.config_register=cfg_reg
+		
 
 	def _load_calibration(self):
 		self.cal_T1 = self._device.readU16LE(BMP280_T1)   # INT16
@@ -207,6 +260,15 @@ class BMP280(object):
 		p0 = pressure / pow(1.0 - altitude_m/44330.0, 5.255)
 		self._logger.debug('Sealevel pressure {0} Pa'.format(p0))
 		return p0
+		
+	def read_control_meas_register(self):
+		"""Get the current control register"""
+		current_cntl_meas_reg=self._device.readU8(BMP280_CONTROLMEAS)
+		return current_cntl_meas_reg
+		
+	def read_config_register(self):
+		current_config_reg=self._device.readU8(BMP280_CONFIG)
+		return current_config_reg
 
 if __name__ == "__main__":
 
@@ -224,3 +286,11 @@ if __name__ == "__main__":
 	print test.cal_P8
 	print test.cal_P9
 
+	# Read Control Meas
+	
+	print 'Current C.Meas. Reg:'
+	print test.read_control_meas_register()
+	
+	print 'Current Config Reg:'
+	print test.read_config_register()
+	
